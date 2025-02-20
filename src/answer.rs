@@ -95,7 +95,7 @@ mod tests {
         let mut buf = String::new();
         tmp_file.seek(std::io::SeekFrom::Start(0)).unwrap();
         tmp_file.read_to_string(&mut buf).unwrap();
-        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="UTF-8"?>
 <answer fraction="100" format="moodle_auto_format">
   <text>Answer text</text>
   <feedback format="moodle_auto_format">
@@ -113,7 +113,7 @@ mod tests {
         let mut buf = String::new();
         tmp_file.seek(std::io::SeekFrom::Start(0)).unwrap();
         tmp_file.read_to_string(&mut buf).unwrap();
-        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
+        let expected = r#"<?xml version="1.0" encoding="UTF-8"?>
 <answer fraction="-100" format="moodle_auto_format">
   <text>Answer text</text>
   <feedback format="moodle_auto_format">
