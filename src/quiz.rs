@@ -114,7 +114,6 @@ impl Quiz {
     /// # Errors
     ///
     /// Returns an QuizError if the problem occurs during writing the XML file or requirements are not met.
-
     pub fn to_xml(&mut self, filename: &str) -> Result<(), QuizError> {
         if self.questions.is_empty() {
             return Err(EmptyError.into());

@@ -34,7 +34,7 @@ mod tests {
     fn pointlimit_test() {
         let mut question =
             ShortAnswerQuestion::new("Easy question".into(), "Kenella on S rinnassa".into(), None);
-        let answer = Answer::new(200, "Superman".into(), Some("Oikein".into()));
+        let answer = Answer::new(125, "Superman".into(), Some("Oikein".into()));
         question.add_answers(answer.into()).unwrap();
 
         let mut quiz = Quiz::new(question.into());

@@ -8,8 +8,8 @@ use crate::xml_util::{write_named_formatted_scope, write_text_tag};
 /// Answer type struct, which is common for all question types.
 #[derive(Debug, Clone)]
 pub struct Answer {
-    /// Fraction of the answer, 0-100
-    pub fraction: u8,
+    /// Fraction of the answer, -100-100
+    pub fraction: i8,
     /// The answer text
     pub text: String,
     /// Optional feedback for the answer
@@ -25,7 +25,7 @@ impl Answer {
     /// * `new_fraction` - The amount of points answer gives from 0-100
     /// * `new_text` - Text displayed on the answer.
     /// * `new_feedback` - Feedback displayed on the answer can be left empty with None.
-    pub fn new(new_fraction: u8, new_text: String, new_feedback: Option<String>) -> Self {
+    pub fn new(new_fraction: i8, new_text: String, new_feedback: Option<String>) -> Self {
         Self {
             fraction: new_fraction,
             text: new_text,
@@ -80,13 +80,18 @@ mod tests {
             .perform_indent(true)
             .create_writer(&tmp_file);
 
-        let mut answer = Answer::new(
+        let mut answer1 = Answer::new(
             100,
             "Answer text".to_string(),
             "Particularly well answered!".to_string().into(),
         );
-        answer.set_text_format(TextFormat::Moodle);
-        answer.to_xml(&mut writer).unwrap();
+        let mut answer2 = Answer::new(
+            -100,
+            "Answer text".to_string(),
+            "Ugh. Wrong answer!".to_string().into(),
+        );
+        answer1.set_text_format(TextFormat::Moodle);
+        answer1.to_xml(&mut writer).unwrap();
         let mut buf = String::new();
         tmp_file.seek(std::io::SeekFrom::Start(0)).unwrap();
         tmp_file.read_to_string(&mut buf).unwrap();
@@ -95,6 +100,24 @@ mod tests {
   <text>Answer text</text>
   <feedback format="moodle_auto_format">
     <text>Particularly well answered!</text>
+  </feedback>
+</answer>"#;
+        assert_eq!(expected, buf);
+        buf.clear();
+        let mut tmp_file = tempfile::tempfile().unwrap();
+        let mut writer = EmitterConfig::new()
+            .perform_indent(true)
+            .create_writer(&tmp_file);
+        answer2.set_text_format(TextFormat::Moodle);
+        answer2.to_xml(&mut writer).unwrap();
+        let mut buf = String::new();
+        tmp_file.seek(std::io::SeekFrom::Start(0)).unwrap();
+        tmp_file.read_to_string(&mut buf).unwrap();
+        let expected = r#"<?xml version="1.0" encoding="utf-8"?>
+<answer fraction="-100" format="moodle_auto_format">
+  <text>Answer text</text>
+  <feedback format="moodle_auto_format">
+    <text>Ugh. Wrong answer!</text>
   </feedback>
 </answer>"#;
         assert_eq!(expected, buf);
